@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:receipt_scanner/controllers/navigation/navigation.dart';
 import 'package:receipt_scanner/database/local_database.dart';
 import 'package:receipt_scanner/models/receipt.dart';
-import 'package:receipt_scanner/screens/data/temp.dart';
 import 'package:receipt_scanner/services/excel_operations.dart';
 import 'package:receipt_scanner/services/scan.dart';
 import 'package:receipt_scanner/shared/constants.dart';
@@ -20,6 +19,11 @@ class Data extends StatefulWidget {
 
 class _DataState extends State<Data> {
   bool loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   _submitForm() async {
     await putExcelandSend(await DBProvider.db.getAllReceipts());
@@ -38,6 +42,7 @@ class _DataState extends State<Data> {
     return loading
         ? Loading()
         : Scaffold(
+            backgroundColor: Colors.white,
             key: _key,
             body: Stack(
               children: [
@@ -46,7 +51,10 @@ class _DataState extends State<Data> {
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Receipt>> snapshot) {
                     if (snapshot.hasData)
-                      return buildDBListView(snapshot, _key);
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: size.height * 0.12),
+                        child: buildDBListView(snapshot, _key, size),
+                      );
                     else
                       return Center(child: CircularProgressIndicator());
                   },
@@ -74,7 +82,7 @@ class _DataState extends State<Data> {
                 // ),
                 Padding(
                   padding: EdgeInsets.symmetric(
-                      vertical: size.height * 0.03,
+                      vertical: size.height * 0.01,
                       horizontal: size.width * 0.06),
                   child: Align(
                     alignment: Alignment.bottomCenter,
@@ -84,16 +92,18 @@ class _DataState extends State<Data> {
                         FloatingActionButton(
                           heroTag: "btn1",
                           child: Icon(
-                            Icons.mail,
-                            color: Colors.white,
+                            Icons.send,
+                            color: kPalette2,
                             size: 30,
                           ),
                           onPressed: () async {
                             setState(() => loading = true);
+
                             await _submitForm();
 
                             setState(() {
                               loading = false;
+
                               widget.bloc
                                   .changeNavigationIndex(Navigation.HOMEPAGE);
                             });
@@ -103,13 +113,13 @@ class _DataState extends State<Data> {
                             //         builder: (context) =>
                             //             SendMail(bloc: widget.bloc)));
                           },
-                          backgroundColor: kPalette2,
+                          backgroundColor: Colors.white,
                         ),
                         FloatingActionButton(
                           heroTag: "btn2",
                           child: Icon(
                             Icons.note_add,
-                            color: Colors.white,
+                            color: kPalette2,
                             size: 30,
                           ),
                           onPressed: () {
@@ -120,7 +130,7 @@ class _DataState extends State<Data> {
                                         camera: widget.camera,
                                         bloc: widget.bloc)));
                           },
-                          backgroundColor: kPalette2,
+                          backgroundColor: Colors.white,
                         ),
                       ],
                     ),
@@ -131,16 +141,24 @@ class _DataState extends State<Data> {
           );
   }
 
-  ListView buildDBListView(
-      AsyncSnapshot<List<Receipt>> snapshot, GlobalKey<ScaffoldState> _key) {
+  ListView buildDBListView(AsyncSnapshot<List<Receipt>> snapshot,
+      GlobalKey<ScaffoldState> _key, Size size) {
     return ListView.builder(
       shrinkWrap: true,
       itemCount: snapshot.data.length,
       itemBuilder: (BuildContext context, int index) {
         Receipt item = snapshot.data[index];
         return Dismissible(
+          direction: DismissDirection.endToStart,
           key: UniqueKey(),
-          background: Container(color: kPalette2),
+          background: Container(
+            color: kAppBlue,
+            child: Padding(
+              padding: EdgeInsets.only(left: size.width * 0.8),
+              child: Icon(Icons.delete,
+                  size: size.height * 0.04, color: Colors.white),
+            ),
+          ),
           onDismissed: (direction) {
             //TODO: Dissmisible objeyi geri getir
             /*setState(() {
@@ -189,63 +207,71 @@ class _DataState extends State<Data> {
                 );
             });
           },
-          child: Card(
-            color: Colors.white,
-            elevation: 0,
-            child: Row(
-              children: <Widget>[
-                Image.asset("assets/icon/receipt_logo.png", scale: 15),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 2, 0, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          "Company Name",
-                          style: TextStyle(
-                            fontFamily: "Spartan-Bold",
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 3),
+            child: Card(
+              color: Colors.white,
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  children: <Widget>[
+                    Image.asset("assets/icon/receipt_logo.png", scale: 15),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(40, 2, 0, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 5),
+                            child: Text(
+                              "Company Name",
+                              style: TextStyle(
+                                fontFamily: "Spartan-Bold",
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      Text(
-                        "${item.firstName}",
-                        style: TextStyle(
-                            fontFamily: kDefaultFontFamily, color: kPalette2),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 2, 0, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          "Tax Number",
-                          style: TextStyle(
-                            fontFamily: "Spartan-Bold",
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
+                          Text(
+                            "${item.firstName}",
+                            style: TextStyle(
+                                fontFamily: kDefaultFontFamily,
+                                color: kPalette2),
                           ),
-                        ),
+                        ],
                       ),
-                      Text(
-                        "${item.lastName}",
-                        style: TextStyle(
-                            fontFamily: kDefaultFontFamily, color: kPalette2),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(20, 2, 0, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 5),
+                            child: Text(
+                              "Tax Number",
+                              style: TextStyle(
+                                fontFamily: "Spartan-Bold",
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            "${item.lastName}",
+                            style: TextStyle(
+                                fontFamily: kDefaultFontFamily,
+                                color: kPalette2),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         );

@@ -6,11 +6,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:camera/camera.dart';
 import 'package:receipt_scanner/controllers/navigation/navigation.dart';
+import 'package:receipt_scanner/services/read_text.dart';
 import 'package:receipt_scanner/services/scan.dart';
 
 import 'package:receipt_scanner/shared/constants.dart';
 import 'package:receipt_scanner/screens/data/data.dart';
 import 'package:receipt_scanner/controllers/navigation/bar_controller.dart';
+import 'package:receipt_scanner/shared/loading.dart';
 
 class HomePage extends StatefulWidget {
   final CameraDescription camera;
@@ -22,10 +24,51 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool loading = false;
+
+  pickImage(context) async {
+    final tempFile = await ImagePicker().getImage(source: ImageSource.gallery);
+    File _pickedImage = File(tempFile.path);
+    File croppedFile = await ImageCropper.cropImage(
+      sourcePath: _pickedImage.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      androidUiSettings: AndroidUiSettings(
+          toolbarTitle: 'Crop Fish',
+          statusBarColor: kPalette2,
+          toolbarColor: kPalette2,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false),
+    );
+
+    setState(() {
+      loading = true;
+    });
+
+    bool done = await operations(croppedFile);
+
+    if (done)
+      print("successful");
+    else
+      print("unsuccessful");
+
+    setState(() {
+      widget.bloc.changeNavigationIndex(Navigation.DATA);
+      loading = false;
+    });
+    //Navigator.popUntil(context, ModalRoute.withName('/'));
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return buildHomeBody(size);
+    return loading ? Loading() : buildHomeBody(size);
   }
 
   Column buildHomeBody(Size size) {
@@ -99,8 +142,9 @@ class _HomePageState extends State<HomePage> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: IconButton(
-                      onPressed: () {
+                      onPressed: () async {
                         //TODO:Push to pick_image.dart
+                        await pickImage(context);
                       },
                       highlightColor: Colors.grey,
                       iconSize: 36,

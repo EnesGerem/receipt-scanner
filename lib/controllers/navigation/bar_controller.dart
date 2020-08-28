@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:receipt_scanner/database/firebase_database.dart';
 import 'package:receipt_scanner/models/user.dart';
 import 'package:receipt_scanner/screens/screens.dart';
+import 'package:receipt_scanner/services/auth.dart';
 import 'package:receipt_scanner/shared/constants.dart';
 import 'navigation.dart';
 
@@ -19,6 +20,7 @@ class NavigationBarController extends StatefulWidget {
 class _NavigationBarControllerState extends State<NavigationBarController> {
   int _currentIndex = 0;
   final NavigationBloc bloc = NavigationBloc();
+  final AuthService _auth = AuthService();
 
   @override
   void dispose() {
@@ -57,7 +59,7 @@ class _NavigationBarControllerState extends State<NavigationBarController> {
             case Navigation.DATA:
               return Data(camera: widget.camera, bloc: bloc);
             case Navigation.PROFILE:
-              return Profile();
+              return Profile(auth: _auth);
           }
 
           return CircularProgressIndicator();
