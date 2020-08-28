@@ -1,25 +1,27 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:camera/camera.dart';
+import 'package:receipt_scanner/controllers/navigation/navigation.dart';
+import 'package:receipt_scanner/services/scan.dart';
 
 import 'package:receipt_scanner/shared/constants.dart';
 import 'package:receipt_scanner/screens/data/data.dart';
 import 'package:receipt_scanner/controllers/navigation/bar_controller.dart';
 
 class HomePage extends StatefulWidget {
+  final CameraDescription camera;
+  final NavigationBloc bloc;
+
+  const HomePage({Key key, this.camera, this.bloc}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  Future pickImage(context, source) async {
-    // ignore: deprecated_member_use
-    var tempFile = await ImagePicker.pickImage(
-      source: source,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -30,7 +32,6 @@ class _HomePageState extends State<HomePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        //appBarContainer(context),
         Image.asset("assets/icon/receipt_logo.png", scale: 3),
         SizedBox(height: size.height * .0625),
         Padding(
@@ -58,7 +59,14 @@ class _HomePageState extends State<HomePage> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: IconButton(
-                      onPressed: () async {},
+                      onPressed: () {
+                        //TODO: Push to scan.dart
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Scan(
+                                    camera: widget.camera, bloc: widget.bloc)));
+                      },
                       highlightColor: kPalette2,
                       iconSize: 40,
                       icon: Icon(
@@ -91,7 +99,9 @@ class _HomePageState extends State<HomePage> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        //TODO:Push to pick_image.dart
+                      },
                       highlightColor: Colors.grey,
                       iconSize: 36,
                       icon: Icon(

@@ -1,9 +1,16 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:receipt_scanner/database/firebase_database.dart';
+import 'package:receipt_scanner/models/user.dart';
 import 'package:receipt_scanner/screens/screens.dart';
 import 'package:receipt_scanner/shared/constants.dart';
 import 'navigation.dart';
 
 class NavigationBarController extends StatefulWidget {
+  final CameraDescription camera;
+
+  const NavigationBarController({Key key, this.camera}) : super(key: key);
   @override
   _NavigationBarControllerState createState() =>
       _NavigationBarControllerState();
@@ -11,7 +18,7 @@ class NavigationBarController extends StatefulWidget {
 
 class _NavigationBarControllerState extends State<NavigationBarController> {
   int _currentIndex = 0;
-  final NavigationBloc bloc = new NavigationBloc();
+  final NavigationBloc bloc = NavigationBloc();
 
   @override
   void dispose() {
@@ -21,11 +28,19 @@ class _NavigationBarControllerState extends State<NavigationBarController> {
 
   @override
   Widget build(BuildContext context) {
+    // final user = Provider.of<User>(context);
+    User user = User(
+        uid: "WsgHAykbgiahZl7U3mt2wXDoRLF2",
+        name: "Enes Gerem",
+        email: "eneesgerem@gmail.com");
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: buildAppBar(size),
-      body: buildBody(),
-      bottomNavigationBar: buildBottomNavigationBar(),
+    return StreamProvider.value(
+      value: DatabaseService(uid: user.uid).userData,
+      child: Scaffold(
+        appBar: buildAppBar(size),
+        body: buildBody(),
+        bottomNavigationBar: buildBottomNavigationBar(),
+      ),
     );
   }
 
@@ -38,9 +53,9 @@ class _NavigationBarControllerState extends State<NavigationBarController> {
 
           switch (snapshot.data) {
             case Navigation.HOMEPAGE:
-              return HomePage();
+              return HomePage(camera: widget.camera, bloc: bloc);
             case Navigation.DATA:
-              return Data(bloc: bloc);
+              return Data(camera: widget.camera, bloc: bloc);
             case Navigation.PROFILE:
               return Profile();
           }

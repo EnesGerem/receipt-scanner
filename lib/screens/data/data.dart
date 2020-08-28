@@ -1,41 +1,134 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:receipt_scanner/controllers/navigation/navigation.dart';
 import 'package:receipt_scanner/database/local_database.dart';
 import 'package:receipt_scanner/models/receipt.dart';
+import 'package:receipt_scanner/screens/data/temp.dart';
+import 'package:receipt_scanner/services/excel_operations.dart';
+import 'package:receipt_scanner/services/scan.dart';
 import 'package:receipt_scanner/shared/constants.dart';
+import 'package:receipt_scanner/shared/loading.dart';
 
 class Data extends StatefulWidget {
+  final CameraDescription camera;
   final NavigationBloc bloc;
 
-  const Data({Key key, this.bloc}) : super(key: key);
-
+  const Data({Key key, this.camera, this.bloc}) : super(key: key);
   @override
   _DataState createState() => _DataState();
 }
 
 class _DataState extends State<Data> {
+  bool loading = false;
+
+  _submitForm() async {
+    await putExcelandSend(await DBProvider.db.getAllReceipts());
+    await DBProvider.db
+        .getAllReceipts()
+        .then((value) => value.forEach((element) {
+              DBProvider.db.deleteReceipt(element.id);
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
     Future allData = DBProvider.db.getAllReceipts();
     Size size = MediaQuery.of(context).size;
     GlobalKey<ScaffoldState> _key = GlobalKey();
-    return Scaffold(
-      key: _key,
-      body: Padding(
-        padding:
-            EdgeInsets.fromLTRB(0, size.height * 0.15, 0, size.height * 0.045),
-        child: FutureBuilder<List<Receipt>>(
-          future: allData,
-          builder:
-              (BuildContext context, AsyncSnapshot<List<Receipt>> snapshot) {
-            if (snapshot.hasData)
-              return buildDBListView(snapshot, _key);
-            else
-              return Center(child: CircularProgressIndicator());
-          },
-        ),
-      ),
-    );
+    return loading
+        ? Loading()
+        : Scaffold(
+            key: _key,
+            body: Stack(
+              children: [
+                FutureBuilder<List<Receipt>>(
+                  future: allData,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Receipt>> snapshot) {
+                    if (snapshot.hasData)
+                      return buildDBListView(snapshot, _key);
+                    else
+                      return Center(child: CircularProgressIndicator());
+                  },
+                ),
+                // Padding(
+                //   padding: EdgeInsets.symmetric(
+                //       vertical: size.height * 0.03, horizontal: size.width * 0.06),
+                //   child: Align(
+                //     alignment: Alignment.bottomRight,
+                //     child: FloatingActionButton(
+                //       child: Icon(
+                //         Icons.mail,
+                //         color: Colors.white,
+                //         size: 30,
+                //       ),
+                //       onPressed: () async {
+                //         // setState(() => loading = true);
+                //         await _submitForm();
+
+                //         Navigator.popUntil(context, ModalRoute.withName('/'));
+                //       },
+                //       backgroundColor: kPalette2,
+                //     ),
+                //   ),
+                // ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: size.height * 0.03,
+                      horizontal: size.width * 0.06),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        FloatingActionButton(
+                          heroTag: "btn1",
+                          child: Icon(
+                            Icons.mail,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                          onPressed: () async {
+                            setState(() => loading = true);
+                            await _submitForm();
+
+                            setState(() {
+                              loading = false;
+                              widget.bloc
+                                  .changeNavigationIndex(Navigation.HOMEPAGE);
+                            });
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) =>
+                            //             SendMail(bloc: widget.bloc)));
+                          },
+                          backgroundColor: kPalette2,
+                        ),
+                        FloatingActionButton(
+                          heroTag: "btn2",
+                          child: Icon(
+                            Icons.note_add,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Scan(
+                                        camera: widget.camera,
+                                        bloc: widget.bloc)));
+                          },
+                          backgroundColor: kPalette2,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 
   ListView buildDBListView(
@@ -96,23 +189,12 @@ class _DataState extends State<Data> {
                 );
             });
           },
-          // child: ListTile(
-          //   title: Text(
-          //     "${item.firstName}\t${item.lastName}",
-          //     style: TextStyle(
-          //       fontFamily: "Spartan-Medium",
-          //       fontSize: 15,
-          //       fontWeight: FontWeight.bold,
-          //     ),
-          //   ),
-          //   leading: Image.asset("assets/icon/voucher_logo.png", scale: 15),
-          // ),
           child: Card(
             color: Colors.white,
             elevation: 0,
             child: Row(
               children: <Widget>[
-                Image.asset("assets/icon/voucher_logo.png", scale: 15),
+                Image.asset("assets/icon/receipt_logo.png", scale: 15),
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 2, 0, 0),
                   child: Column(

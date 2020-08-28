@@ -7,6 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:receipt_scanner/controllers/navigation/bar_controller.dart';
 
 class Wrapper extends StatelessWidget {
+  final CameraDescription camera;
+
+  Wrapper({Key key, @required this.camera}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final user = false;
@@ -16,8 +20,6 @@ class Wrapper extends StatelessWidget {
     if (user)
       return Authenticate();
     else
-      return NavigationBarController();
-
-    // return Temp();
+      return NavigationBarController(camera: camera);
   }
 }
