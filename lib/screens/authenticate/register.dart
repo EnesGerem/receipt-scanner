@@ -69,19 +69,27 @@ class _RegisterState extends State<Register> {
                               //buildEmailForm(email, setState),
                               RoundedInputField(
                                 labelText: "FULL NAME",
+                                icon: Image.asset("assets/icon/user.png",
+                                    scale: 20),
                                 onChanged: (value) => fullName = value,
                               ),
                               RoundedInputField(
                                 labelText: "EMAIL",
+                                icon: Image.asset("assets/icon/user.png",
+                                    scale: 20),
                                 onChanged: (value) => email = value,
                               ),
                               // buildEmailForm(email, setState),
-                              RoundedPasswordField(
+                              RoundedInputField(
                                 labelText: "PASSWORD",
+                                icon: Image.asset("assets/icon/lock.png",
+                                    scale: 20),
                                 onChanged: (value) => password = value,
                               ),
-                              RoundedPasswordField(
+                              RoundedInputField(
                                 labelText: "CONFIRM PASSWORD",
+                                icon: Image.asset("assets/icon/lock.png",
+                                    scale: 20),
                                 onChanged: (value) => rePassword = value,
                               ),
                               SizedBox(

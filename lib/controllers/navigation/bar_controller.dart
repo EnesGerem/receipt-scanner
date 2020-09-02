@@ -6,6 +6,7 @@ import 'package:receipt_scanner/models/user.dart';
 import 'package:receipt_scanner/screens/screens.dart';
 import 'package:receipt_scanner/services/auth.dart';
 import 'package:receipt_scanner/shared/constants.dart';
+import 'package:receipt_scanner/shared/loading.dart';
 import 'navigation.dart';
 
 class NavigationBarController extends StatefulWidget {
@@ -71,6 +72,7 @@ class _NavigationBarControllerState extends State<NavigationBarController> {
 
   AppBar buildAppBar(Size size) {
     return AppBar(
+      toolbarHeight: size.height * 0.1,
       backgroundColor: kPalette2,
       brightness: Brightness.dark,
       title: Text(
@@ -93,27 +95,28 @@ class _NavigationBarControllerState extends State<NavigationBarController> {
       type: BottomNavigationBarType.fixed,
       items: [
         BottomNavigationBarItem(
-          icon: Icon(
-            Icons.home,
-          ),
-          title: Text(
-            'Home',
-            style: navigationItemTextStyle,
-          ),
+          // icon: Icon(
+          //   Icons.home,
+          // ),
+          icon: Image.asset("assets/icon/home.png", scale: 20),
+          title: Text('Home', style: navigationItemTextStyle),
+          activeIcon: Image.asset("assets/icon/homeon.png", scale: 20),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.cloud_done),
+          icon: Image.asset("assets/icon/data.png", scale: 20),
           title: Text(
             'Data',
             style: navigationItemTextStyle,
           ),
+          activeIcon: Image.asset("assets/icon/dataon.png", scale: 20),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
+          icon: Image.asset("assets/icon/profile.png", scale: 20),
           title: Text(
             'Profile',
             style: navigationItemTextStyle,
           ),
+          activeIcon: Image.asset("assets/icon/profileon.png", scale: 20),
         ),
       ],
       elevation: 0,

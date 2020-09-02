@@ -32,7 +32,7 @@ class _ProfileState extends State<Profile> {
     TextStyle profileTextStyle = TextStyle(
       fontFamily: "Spartan-ExtraBold",
       fontSize: size.width * 0.0375,
-      color: Color(0xFF007FFF),
+      color: kAppBlue,
     );
 
     void _showEditProfilePanel() {
@@ -53,12 +53,11 @@ class _ProfileState extends State<Profile> {
           Padding(
             padding: EdgeInsets.symmetric(vertical: size.height * 0.03),
             child: CircleAvatar(
-              backgroundColor: kPalette2,
+              backgroundColor: kAppBlue,
               radius: size.height * 0.0875,
-              child: Icon(
-                Icons.person,
-                size: size.height * 0.15,
-                color: kPalette5,
+              child: Image.asset(
+                "assets/icon/profile.png",
+                scale: 7,
               ),
             ),
           ),

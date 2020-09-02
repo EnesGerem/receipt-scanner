@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
         CropAspectRatioPreset.ratio16x9
       ],
       androidUiSettings: AndroidUiSettings(
-          toolbarTitle: 'Crop Fish',
+          toolbarTitle: 'Crop Receipt',
           statusBarColor: kPalette2,
           toolbarColor: kPalette2,
           toolbarWidgetColor: Colors.white,

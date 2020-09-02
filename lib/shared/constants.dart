@@ -10,7 +10,8 @@ const kPalette3 = Color(0xFF3C3C3C);
 const kPalette4 = Color(0xFF787878);
 const kPalette5 = Color(0xFFE0E0E0);
 
-const kAppBlue = Color(0xFF007FFF);
+const kAppBlue = Color(0xFF28ABFA);
+const kAppBlueLight = Color(0xFF14CFFF);
 
 const navigationItemTextStyle = TextStyle(
   fontWeight: FontWeight.bold,

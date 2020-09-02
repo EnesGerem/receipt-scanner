@@ -159,7 +159,7 @@ class BuildRichText extends StatelessWidget {
               text: link,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.blue,
+                color: kAppBlue,
               ),
               recognizer: TapGestureRecognizer()..onTap = onTap),
         ],
@@ -215,12 +215,12 @@ class TextFieldContainer extends StatelessWidget {
 
 class RoundedInputField extends StatelessWidget {
   final String labelText;
-  final IconData icon;
+  final icon;
   final ValueChanged<String> onChanged;
   const RoundedInputField({
     Key key,
     this.labelText,
-    this.icon = Icons.person_outline,
+    this.icon,
     this.onChanged,
   }) : super(key: key);
 
@@ -232,10 +232,7 @@ class RoundedInputField extends StatelessWidget {
         onChanged: onChanged,
         cursorColor: kPalette2,
         decoration: InputDecoration(
-          icon: Icon(
-            icon,
-            color: kPalette2,
-          ),
+          icon: icon,
           labelText: labelText,
           labelStyle: TextStyle(
               fontSize: size.height * 0.01625, color: Colors.grey[600]),

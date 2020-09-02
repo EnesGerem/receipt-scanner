@@ -85,6 +85,14 @@ flutter:
   - assets/icon/twitter.png
   - assets/icon/receipt_logo.png
   - assets/icon/splash_screen.png
+  - assets/icon/profile.png
+  - assets/icon/data.png
+  - assets/icon/home.png
+  - assets/icon/homeon.png
+  - assets/icon/dataon.png
+  - assets/icon/profileon.png
+  - assets/icon/user.png
+  - assets/icon/lock.png
   
   fonts:
     - family: xd

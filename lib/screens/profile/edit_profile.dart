@@ -27,7 +27,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
 
     TextStyle appBarStyle = TextStyle(
       fontFamily: "Spartan-ExtraBold",
-      fontSize: size.width * 0.05,
+      fontSize: size.width * 0.06,
       color: kPalette2,
       letterSpacing: 1.5,
     );
@@ -41,6 +41,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
 
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: size.height * 0.1,
         title: Text("Edit Profile", style: appBarStyle),
         backgroundColor: Colors.white,
         centerTitle: true,

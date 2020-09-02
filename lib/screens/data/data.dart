@@ -82,7 +82,7 @@ class _DataState extends State<Data> {
                 // ),
                 Padding(
                   padding: EdgeInsets.symmetric(
-                      vertical: size.height * 0.01,
+                      vertical: size.height * 0.02,
                       horizontal: size.width * 0.06),
                   child: Align(
                     alignment: Alignment.bottomCenter,
@@ -93,7 +93,7 @@ class _DataState extends State<Data> {
                           heroTag: "btn1",
                           child: Icon(
                             Icons.send,
-                            color: kPalette2,
+                            color: Colors.white,
                             size: 30,
                           ),
                           onPressed: () async {
@@ -113,13 +113,13 @@ class _DataState extends State<Data> {
                             //         builder: (context) =>
                             //             SendMail(bloc: widget.bloc)));
                           },
-                          backgroundColor: Colors.white,
+                          backgroundColor: kPalette2,
                         ),
                         FloatingActionButton(
                           heroTag: "btn2",
                           child: Icon(
                             Icons.note_add,
-                            color: kPalette2,
+                            color: Colors.white,
                             size: 30,
                           ),
                           onPressed: () {
@@ -130,7 +130,7 @@ class _DataState extends State<Data> {
                                         camera: widget.camera,
                                         bloc: widget.bloc)));
                           },
-                          backgroundColor: Colors.white,
+                          backgroundColor: kPalette2,
                         ),
                       ],
                     ),
