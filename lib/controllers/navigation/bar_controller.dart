@@ -6,7 +6,6 @@ import 'package:receipt_scanner/models/user.dart';
 import 'package:receipt_scanner/screens/screens.dart';
 import 'package:receipt_scanner/services/auth.dart';
 import 'package:receipt_scanner/shared/constants.dart';
-import 'package:receipt_scanner/shared/loading.dart';
 import 'navigation.dart';
 
 class NavigationBarController extends StatefulWidget {

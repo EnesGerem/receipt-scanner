@@ -29,7 +29,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
       fontFamily: "Spartan-ExtraBold",
       fontSize: size.width * 0.06,
       color: kPalette2,
-      letterSpacing: 1.5,
+      letterSpacing: 0.5,
     );
 
     TextStyle fieldTitleStyle = TextStyle(
